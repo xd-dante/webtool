@@ -1,0 +1,341 @@
+<div class="report_menu_section clearfix">
+  <div class="logo_view">
+    <img src="../assets/Brand-Royale.png" alt="logo" class="img-responsive">
+  </div>
+  <span class="report_name">
+    Measure & Analytics / Sales Report
+  </span>
+  <div class="report_profile pull-right">
+    <span><img src="../assets/user-profile.jpg" alt="logo" class="img-responsive"></span>
+    <p>Maciek Marchlewski</p>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="clearfix header_view">
+      <div class="header_left">
+        <div class="menu_view">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </div>
+        <span class="all_report_ti">All Reports</span>
+        <span class="new_repo_tittle">Untittle Report</span>
+        <div class="daily_time">
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          Daily
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="header_right pull-right">
+        <div class="report_update_view">
+          <p>Report last updated 28 Minutes ago</p>
+          <span><i class="fa fa-repeat" aria-hidden="true"></i></span>
+        </div>
+        <!-- <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+          <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+          <span></span> <b class="caret"></b>
+        </div> -->
+        <div class="date_calender_view">
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{selectedDateCol}}
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu" *ngIf="this.allFieldsData">
+              <li *ngFor="let item of allFieldsData.filter_date_columns">
+                <a href="javascript:void(0);" (click)="selectedDateFild(item)">{{item.ColumnName}}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="calender_view">
+          <div class="form-group">
+            <!-- <input type="text" class="form-control" id="" placeholder="last Month Aug 1, 2018 - Aug 31, 2018" value="last Month Aug 1, 2018 - Aug 31, 2018"> -->
+            <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" [options]="options"  #dateRangePicker></ngx-mat-drp>
+
+          </div>
+        </div>
+        <div class="export_btn_view">
+          <button type="button" class="btn">Export</button>
+        </div><!-- export_btn_view End -->
+        <div class="save_btn_drop">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">save</button>
+        </div>
+        <div class="save_drop">
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>
+            <ul class="dropdown-menu">
+              <li><a href="#" data-toggle="modal" data-target="#myModal">Save as...</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="table_view_section">
+  <div class="report_left_section">
+    <div class="whole_report">
+      <div class="form-group">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input class="form-control" id="" placeholder="Search Columns" type="text" value="Search Columns" [(ngModel)]="searchFilter" (input)="searchCheckbox($event)">
+      </div>
+    </div><!-- whole_report End -->
+    <div class="report_tab_view">
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#dimensions">Dimensions</a></li>
+        <li><a data-toggle="tab" href="#field">Fields</a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="dimensions" class="tab-pane fade in active">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" role="button" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Primary Dimensions
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body" *ngIf="primaryDimension">
+                  <div class="report_check_listing" *ngFor="let item of primaryDimension.data | filter : searchFilter" placement="right" ngbTooltip="{{item.ToolTip}}">
+                    <input type="checkbox" id="{{item.ColumnName}}" value="{{item.ColumnSlug}}"[(ngModel)]="item.selected" (change)="OnCheckboxSelect(item, $event, 'dimension')">
+                    <label for="{{item.ColumnName}}">{{item.ColumnName}}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="select_field_view" (click)="getColumnsData(0);">
+            Add Selected fields to the report
+          </div>
+        </div>
+        <div id="field" class="tab-pane fade">
+          <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default" *ngFor="let item of fields; let i = index">
+              <div class="panel-heading" role="tab" id="heading{{i}}">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" role="button" data-toggle="collapse" [attr.href]="'#'+'collapse'+i" aria-expanded="true" aria-controls="collapseOne2">
+                      {{item.title}}
+                  </a>
+                </h4>
+              </div>
+              <div id="collapse{{i}}" class="panel-collapse collapse in" role="tabpanel">
+                <div class="panel-body">
+                  <div class="report_check_listing" *ngFor="let innerItem of item.data | filter : searchFilter" placement="right" ngbTooltip="{{innerItem.ToolTip}}">
+                      <input type="checkbox" id="{{innerItem.ColumnName}}" value="{{innerItem.ColumnSlug}}"[(ngModel)]="innerItem.selected" (change)="OnCheckboxSelect(innerItem, $event, 'fields')">
+                      <label for="{{innerItem.ColumnName}}">{{innerItem.ColumnName}}</label>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="select_field_view" (click)="getColumnsData(0);">
+            Add Selected fields to the report
+          </div>
+        </div>
+      </div>
+    </div><!-- report_tab_view End -->
+  </div><!-- report_left_section End -->
+  <div class="report_right_section" #wholeRightSection>
+    <div class="right_header_view clearfix">
+      <div class="back_arrow">
+        <i class="fa fa-angle-left" aria-hidden="true"></i>
+      </div>
+
+      <div class="filter_wrap" *ngFor="let itemMain of conditionArr; let mainIndex = index">
+        <div *ngIf="!itemMain.isFilterAdded" class="add_filter_view">
+          <div class="repo_pro_dro dropdown">
+              <div class="pro_drop_list pro_li_drop dropdown-toggle" data-toggle="dropdown">{{selectedCondiCol[mainIndex].ColumnName}}
+                <span class="caret"></span>
+              </div>
+              <ul class="dropdown-menu">
+                <div class="panel-group" id="accordion3">
+                  <div class="panel panel-default" *ngFor="let item of allColumns; let i = index">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a class="accordion-toggle" [ngClass]="{'collapsed': i > 0}" data-toggle="collapse" [attr.href]="'#'+'collapseFilter'+i+mainIndex">
+                            {{item.title}}
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapseFilter{{i}}{{mainIndex}}" class="panel-collapse collapse" [ngClass]="{'in': i == 0}">
+                      <div class="panel-body">
+
+                        <div class="report_check_listing" *ngFor="let innerItem of item.data; let j = index">
+                          <input type="radio" name="filter{{mainIndex}}" [(ngModel)]="innerItem.checked" id="{{innerItem.ColumnSlug}}{{i}}{{mainIndex}}" value="{{innerItem.ColumnSlug}}{{i}}{{mainIndex}}" (change)="OnRadioSelect(innerItem, $event, mainIndex)">
+                            <label for="{{innerItem.ColumnSlug}}{{i}}{{mainIndex}}">{{innerItem.ColumnName}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </ul>
+          </div>
+          <div class="repo_pro_dro contains_dropdown_view dropdown">
+            <div class="pro_drop_list dropdown-toggle" *ngIf="selectedCondi.length>0" data-toggle="dropdown">{{selectedCondi[mainIndex].name}}
+              <span class="caret"></span>
+            </div>
+            <ul class="dropdown-menu">
+              <div class="report_check_listing" *ngFor="let item of filterCondition; let i = index">
+                <input type="radio" name="filterCondition{{mainIndex}}"  [(ngModel)]="item.checked" id="{{item.keyword}}{{i}}{{mainIndex}}" value="{{item.keyword}}{{i}}{{mainIndex}}" (change)="OnRadioSelectCondition(item, $event, mainIndex)">
+                <label for="{{item.keyword}}{{i}}{{mainIndex}}">{{item.name}}</label>
+              </div>
+            </ul>
+          </div>
+          <!-- contains_dropdown_view End -->
+          <div class="add_contain_view">
+            <input type="text" class="form-control" id="searchText{{mainIndex}}" [(ngModel)]="searchTextArr[mainIndex]" appMyAutofocus>
+          </div>
+          <div class="export_btn_view btn_add">
+            <button type="button" class="btn" *ngIf="searchTextArr[mainIndex]?.length > 0" (click)="applyFilter(mainIndex)">Add</button>
+          </div>
+          <div class="rep_filt_close" (click)="removeCondition(mainIndex);">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
+
+        </div>
+        <div class="box_with_text" *ngIf="itemMain.isFilterAdded">
+          <span (click)="isEidtCondition(mainIndex);">
+            <span class="text-prefix">{{selectedCondiCol[mainIndex].ColumnName}}: </span>
+            <span class="text-suffix">{{searchTextArr[mainIndex]}}</span>
+          </span>
+          <i class="fa fa-times" (click)="removeCondition(mainIndex);"></i>
+        </div>
+      </div><!-- add_filter_view end -->
+
+
+
+      <div class="plus_filter_view" *ngIf="showAddBtn" (click)="addCondition();">
+        <!-- <i class="fa fa-plus-square" aria-hidden="true"></i> -->
+        <img src="../assets/plus-icon.png" alt="plus-icon">
+      </div>
+      <p class="narrow_filter">Add Filters to narrow the data you are seeing</p>
+      <div class="pull-right change_dima_view">
+        <div class="repo_pro_dro">
+          <div class="pro_drop_list ch_rep" (click)="showFilters()">Change Views
+            <span class="caret"></span>
+          </div>
+          <ul *ngIf="isShow">
+            <div class='drophere' *ngIf="isShowTable">
+              <div class="dragtittle">Dimensions</div>
+              <div class="draghere_list" dnd-sortable-container [sortableData]="realTable"  [dropZones]="['zone11']">
+                <div class="drag_view" *ngFor="let h of realTable; let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="dragStart(h,i);">
+                  <img src="../assets/dot.png" alt="dot">
+                  {{h.ColumnName}}
+                  <img src="../assets/cancel.png" alt="cancel" class="fa_close" (click)="removeColumn(h, $event, 'dimension');">
+                </div>
+              </div>
+            </div>
+            <div class='drophere' *ngIf="isShowTableFields">
+              <div class="dragtittle">Fields</div>
+              <div class="draghere_list" id="rightCol" #rightCol dnd-sortable-container [sortableData]="realTableFields">
+                <div class="drag_view" *ngFor="let h of realTableFields; let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="dragStart(h,i);">
+                  <img src="../assets/dot.png" alt="dot">
+                  {{h.ColumnName}}
+                  <img src="../assets/cancel.png" alt="cancel" class="fa_close" (click)="removeColumn(h, $event, 'fields');">
+                </div>
+              </div>
+            </div>
+            <div class="drophere" *ngIf="!isShowTableFields && !isShowTable">
+              <span>No column selected</span>
+            </div>
+          </ul>
+        </div><!-- contains_dropdown_view End -->
+      </div>
+    </div><!-- right_header_view End -->
+
+    <!-- Dragging of cloumn start -->
+
+    <div id="leftSection" #leftSection>
+      <div class="report_table_view clearfix" (window:scroll)="onScroll($event)">
+        <div id="leftCol" #leftCol class="rep_left_col" dnd-sortable-container [sortableData]="realTable" *ngIf="isShowTable" [dropZones]="['zone1']">
+          <div class="rep_col_fix" *ngFor="let h of realTable; let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="dragStart(h,i);">
+            <div class="rep_col_tittle" placement="bottom" ngbTooltip="{{h.ToolTip}}">
+              <div class="drag_col_icon"><img src="../assets/dot.png"></div>
+              <h2>{{h.ColumnName}}</h2>
+              <!-- {{checkCounter(i)}} -->
+              <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+
+                    <li (click)="groupData(h, $event);" *ngIf="groupedColumns.indexOf(h.ColumnSlug) == '-1'"><span><i class="fa fa-list-ul" aria-hidden="true"></i></span> Group</li>
+                    <li (click)="unGroupData(h, $event);" *ngIf="groupedColumns.indexOf(h.ColumnSlug) != '-1' && groupedColumns.length > 0"><span><i class="fa fa-list-ul" aria-hidden="true"></i></span> Ungroup</li>
+                    <li (click)="sortData('asc',h, $event, 'dimension');"><span><i class="fa fa-arrow-up" aria-hidden="true"></i></span> Order Ascending</li>
+                    <li (click)="sortData('desc',h, $event, 'dimension');"><span><i class="fa fa-arrow-down" aria-hidden="true"></i></span> Order Descending</li>
+                    <li (click)="onClickApplyFilter(h);"><span><i class="fa fa-align-center" aria-hidden="true"></i></span> Apply Filter</li>
+                    <li (click)="removeColumn(h, $event, 'dimension');"><span><i class="fa fa-trash-o" aria-hidden="true"></i></span> Remove Column</li>
+                  </ul>
+              </div>
+            </div><!-- rep_col_tittle End -->
+            <div class="report_detail_blog">
+              <div class="listing_repo" *ngFor="let innerItem of h.data; let j = index">
+                <h5>{{innerItem.desc}}</h5>
+                <h6>{{innerItem.short_desc}}</h6>
+              </div>
+              <div class="empty_repo"></div>
+            </div>
+            <div class="show_report_result"></div>
+          </div>
+
+        </div>
+        <div class="rep_right_col" *ngIf="isShowTableFields" id="rightCol" #rightCol dnd-sortable-container [sortableData]="realTableFields" [ngClass]="{'left0':realTable.length==0,'left1':realTable.length==1,'left2':realTable.length==2,'left3':realTable.length==3,'left4':realTable.length==4,'left5':realTable.length==5,'left6':realTable.length==6}" [dropZones]="['zone2']">
+            <div class="full-width">
+            <div class="rep_col_fix " *ngFor="let h of realTableFields; let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="dragStart(h,i);">
+              <div class="rep_col_tittle"  placement="bottom" ngbTooltip="{{h.ToolTip}}">
+                <div class="drag_col_icon"><img src="../assets/dot.png"></div>
+                <h2>{{h.ColumnName}}</h2>
+                <!-- {{checkCounter(i)}} -->
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <li (click)="sortData('asc',h, $event, 'fields');"><span><i class="fa fa-arrow-up" aria-hidden="true"></i></span> Order Ascending</li>
+                      <li (click)="sortData('desc',h, $event, 'fields');"><span><i class="fa fa-arrow-down" aria-hidden="true"></i></span> Order Descending</li>
+                      <li (click)="onClickApplyFilter(h);"><span><i class="fa fa-align-center" aria-hidden="true"></i></span> Apply Filter</li>
+                      <li (click)="removeColumn(h, $event, 'fields');"><span><i class="fa fa-trash-o" aria-hidden="true"></i></span> Remove Column</li>
+                    </ul>
+                </div>
+              </div><!-- rep_col_tittle End -->
+              <div class="report_detail_blog">
+                <div class="listing_repo" *ngFor="let innerItem of h.data; let j = index">
+                  <h5>{{innerItem.desc}}</h5>
+                  <h6>{{innerItem.short_desc}}</h6>
+                </div>
+                <div class="empty_repo"></div>
+              </div>
+              <div class="show_report_result"></div>
+            </div>
+            </div>
+
+          </div>
+      </div>
+
+
+      <!-- rep_left_col End -->
+
+    </div><!-- report_table_view End -->
+  </div>
+  <!-- report_right_section End -->
+  </div>
+</div><!-- header_view End -->
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+        <p>Some text in the modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<ngx-toasta></ngx-toasta>

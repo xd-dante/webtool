@@ -1,1 +1,0 @@
-Angular base for webreporting
